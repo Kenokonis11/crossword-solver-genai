@@ -1,4 +1,6 @@
-ddgs
-requests
-Pillow
+streamlit
+google-generativeai
+PyMuPDF
 pydantic
+ddgs
+Pillow

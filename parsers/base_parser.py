@@ -2,7 +2,7 @@
 Base Crossword Parser — Abstract Interface for All Input Sources
 
 This module defines the abstract base class that all crossword parsers must implement.
-Whether the input is a PDF, a photograph, a .puz file, or a web scrape, every parser
+Whether the input is a PDF, a photograph, or another source, every parser
 must be capable of producing a canonical CrosswordGraph.
 
 The parser pipeline follows a strict 4-stage process:
@@ -41,13 +41,11 @@ class BaseCrosswordParser(ABC):
     to be called sequentially, with each stage building on the previous one.
 
     Subclasses:
-        - PuzFileParser: Parses .puz binary files (e.g., NYT, LA Times downloads)
-        - PDFParser: Extracts crosswords from PDF documents via OCR + layout analysis
-        - ImageParser: Processes photographs of crossword grids via computer vision
-        - WebScrapeParser: Scrapes crossword data from online puzzle sources
+        - PDFCrosswordParser: Extracts crosswords from PDF documents via vector analysis
+        - ImageParser: (future) Processes photographs of crossword grids
 
     Usage:
-        parser = PuzFileParser(source="path/to/puzzle.puz")
+        parser = PDFCrosswordParser(source="path/to/crossword.pdf")
         graph = parser.build_graph()
         # graph is now a validated CrosswordGraph ready for the LLM
     """
@@ -127,7 +125,7 @@ class BaseCrosswordParser(ABC):
         returns a fully validated CrosswordGraph instance.
 
         The returned graph is the canonical representation that the LLM
-        reasoning engine and CSP solver will use. It must pass all Pydantic
+        reasoning engine will use. It must pass all Pydantic
         validators (cell counts match lengths, coordinates within bounds, etc.).
 
         Returns:

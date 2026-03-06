@@ -22,34 +22,6 @@ def search_web(query: str) -> str:
     except Exception as e:
         return f"Search encountered an issue: {str(e)}. Use your best knowledge to help."
 
-def get_variable_domain(variable_id: str) -> dict:
-    """
-    Returns the current candidate pool (domain) and the locked status for a specific crossword clue ID.
-    Used to analyze the algorithm's confidence and current path.
-    """
-    import streamlit as st
-    
-    if "solver" not in st.session_state:
-        return {"error": "No active puzzle."}
-        
-    var = st.session_state.solver.variables.get(variable_id.upper())
-    if not var:
-        return {"error": "Variable not found."}
-        
-    return {
-        "clue_text": var.clue_text,
-        "locked_candidate": var.locked_candidate.text if var.locked_candidate else None,
-        "top_candidates": [
-            {"text": c.text, "score": c.score} 
-            for c in var.domain[:3]
-        ]
-    }
-
-def fetch_puzzle_via_xword_dl(source: str) -> str:
-    """
-    Fetches a puzzle from a publication like NYT or LA Times and returns a success message mapping back into the solver.
-    """
-    pass
 
 def check_word_length(word: str) -> dict:
     """
@@ -141,7 +113,7 @@ class CrosswordTutorAgent:
         self.model = genai.GenerativeModel(
             model_name="gemini-2.5-flash",
             system_instruction=self.system_instruction,
-            tools=[search_web, get_variable_domain, fetch_puzzle_via_xword_dl, check_word_length]
+            tools=[search_web, check_word_length]
         )
 
     def _build_puzzle_context(self) -> str:
